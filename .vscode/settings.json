@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "Dockerfile": true,
+    ".vscode": true,
+    ".gitignore": true
+  }
+}
