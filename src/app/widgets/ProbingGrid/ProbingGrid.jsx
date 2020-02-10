@@ -43,6 +43,8 @@ class ProbingGrid extends PureComponent {
     }
 
     render() {
+        log.error('ProbingGrid render called');
+
         const colWidth = 60;
         const probingColumns = [{
             Header: 'x',
