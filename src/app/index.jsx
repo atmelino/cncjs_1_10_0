@@ -39,6 +39,8 @@ const renderPage = () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
+    log.error('renderPage called');
+
     ReactDOM.render(
         <GridSystemProvider
             breakpoints={[576, 768, 992, 1200]}
