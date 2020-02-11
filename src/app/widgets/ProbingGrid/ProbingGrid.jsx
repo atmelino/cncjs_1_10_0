@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import numeral from 'numeral';
 import ReactTable from 'react-table';
 import './react-table.css';
+import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import log from '../../lib/log';
 
 class ProbingGrid extends PureComponent {
@@ -43,7 +44,9 @@ class ProbingGrid extends PureComponent {
     }
 
     render() {
-        log.error('ProbingGrid render called');
+        log.setLevel(TRACE);
+        //log.error('ProbingGrid render called');
+        log.log(INFO, 'ProbingGrid render called');
 
         const colWidth = 60;
         const probingColumns = [{
@@ -111,6 +114,7 @@ class ProbingGrid extends PureComponent {
                 log.error('ProbingGrid obj : ' + JSON.stringify(this.state.probingObj));
             }
         }
+        log.log(INFO, 'ProbingGrid render before return');
 
         return (
             <div>
