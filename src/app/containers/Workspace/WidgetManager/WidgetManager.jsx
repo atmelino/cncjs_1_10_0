@@ -51,27 +51,6 @@ class WidgetManager extends PureComponent {
             disabled: false
         },
         {
-            id: 'marlin',
-            caption: i18n._('Marlin Widget'),
-            details: i18n._('This widget shows the Marlin state and provides Marlin specific features.'),
-            visible: true,
-            disabled: false
-        },
-        {
-            id: 'smoothie',
-            caption: i18n._('Smoothie Widget'),
-            details: i18n._('This widget shows the Smoothie state and provides Smoothie specific features.'),
-            visible: true,
-            disabled: false
-        },
-        {
-            id: 'tinyg',
-            caption: i18n._('TinyG Widget'),
-            details: i18n._('This widget shows the TinyG state and provides TinyG specific features.'),
-            visible: true,
-            disabled: false
-        },
-        {
             id: 'axes',
             caption: i18n._('Axes Widget'),
             details: i18n._('This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.'),
@@ -89,6 +68,13 @@ class WidgetManager extends PureComponent {
             id: 'laser',
             caption: i18n._('Laser Widget'),
             details: i18n._('This widget allows you control laser intensity and turn the laser on/off.'),
+            visible: true,
+            disabled: false
+        },
+        {
+            id: 'laser2',
+            caption: i18n._('Laser2 Widget'),
+            details: i18n._('This widget allows you control laser2 intensity and turn the laser2 on/off.'),
             visible: true,
             disabled: false
         },

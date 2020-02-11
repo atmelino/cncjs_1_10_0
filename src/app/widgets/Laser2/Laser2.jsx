@@ -19,7 +19,7 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-class Laser extends PureComponent {
+class Laser2 extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -111,4 +111,4 @@ class Laser extends PureComponent {
     }
 }
 
-export default Laser;
+export default Laser2;

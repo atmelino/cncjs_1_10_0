@@ -9,7 +9,7 @@ import controller from 'app/lib/controller';
 import ensurePositiveNumber from 'app/lib/ensure-positive-number';
 import i18n from 'app/lib/i18n';
 import WidgetConfig from '../WidgetConfig';
-import Laser from './Laser';
+import Laser2 from './Laser2';
 import {
     // Grbl
     GRBL,
@@ -22,7 +22,7 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-class LaserWidget extends PureComponent {
+class Laser2Widget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -102,7 +102,7 @@ class LaserWidget extends PureComponent {
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('panel.laserTest.expanded', panel.laserTest.expanded);
+        this.config.set('panel.laser2Test.expanded', panel.laser2Test.expanded);
         if (isNumber(test.power)) {
             this.config.set('test.power', test.power);
         }
@@ -126,8 +126,8 @@ class LaserWidget extends PureComponent {
                 state: controller.state
             },
             panel: {
-                laserTest: {
-                    expanded: this.config.get('panel.laserTest.expanded')
+                laser2Test: {
+                    expanded: this.config.get('panel.laser2Test.expanded')
                 }
             },
             test: {
@@ -252,7 +252,7 @@ class LaserWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Laser
+                    <Laser2
                         state={state}
                         actions={actions}
                     />
@@ -262,4 +262,4 @@ class LaserWidget extends PureComponent {
     }
 }
 
-export default LaserWidget;
+export default Laser2Widget;

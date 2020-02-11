@@ -145,11 +145,6 @@ export const GRBL_ERRORS = [
         description: 'Jog command has no \'=\' or contains prohibited g-code.'
     },
     {
-        code: 17,
-        message: 'Setting disabled',
-        description: 'Laser mode requires PWM output.'
-    },
-    {
         code: 20,
         message: 'Unsupported command',
         description: 'Unsupported or invalid g-code command found in block.'
@@ -424,12 +419,6 @@ export const GRBL_SETTINGS = [
         message: 'Minimum spindle speed',
         units: 'RPM',
         description: 'Minimum spindle speed. Sets PWM to 0.4% or lowest duty cycle.'
-    },
-    {
-        setting: '$32',
-        message: 'Laser-mode enable',
-        units: 'boolean',
-        description: 'Enables laser mode. Consecutive G1/2/3 commands will not halt when spindle speed is changed.'
     },
     {
         setting: '$100',
