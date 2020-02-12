@@ -45,8 +45,7 @@ class ProbingGrid extends PureComponent {
 
     render() {
         log.setLevel(TRACE);
-        //log.error('ProbingGrid render called');
-        log.log(INFO, 'ProbingGrid render called');
+        log.log(INFO, './src/app/widgets/ProbingGrid/ProbingGrid render called');
 
         const colWidth = 60;
         const probingColumns = [{

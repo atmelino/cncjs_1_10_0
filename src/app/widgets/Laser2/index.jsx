@@ -96,22 +96,10 @@ class Laser2Widget extends PureComponent {
 
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized,
-            panel,
-            test
+            minimized
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('panel.laser2Test.expanded', panel.laser2Test.expanded);
-        if (isNumber(test.power)) {
-            this.config.set('test.power', test.power);
-        }
-        if (isNumber(test.duration)) {
-            this.config.set('test.duration', test.duration);
-        }
-        if (isNumber(test.maxS)) {
-            this.config.set('test.maxS', test.maxS);
-        }
     }
 
     getInitialState() {
@@ -125,16 +113,6 @@ class Laser2Widget extends PureComponent {
                 settings: controller.settings,
                 state: controller.state
             },
-            panel: {
-                laser2Test: {
-                    expanded: this.config.get('panel.laser2Test.expanded')
-                }
-            },
-            test: {
-                power: this.config.get('test.power', 0),
-                duration: this.config.get('test.duration', 0),
-                maxS: this.config.get('test.maxS', 1000)
-            }
         };
     }
 
@@ -153,7 +131,7 @@ class Laser2Widget extends PureComponent {
     }
 
     canClick() {
-        const { port, controller, test } = this.state;
+        const { port, controller } = this.state;
         const controllerType = controller.type;
 
         if (!port) {
@@ -162,10 +140,6 @@ class Laser2Widget extends PureComponent {
         if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
-        if (!(isNumber(test.power) && isNumber(test.duration) && isNumber(test.maxS))) {
-            return false;
-        }
-
         return true;
     }
 
