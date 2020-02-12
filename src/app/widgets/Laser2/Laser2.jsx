@@ -7,18 +7,10 @@ import Toggler from 'app/components/Toggler';
 import RepeatButton from 'app/components/RepeatButton';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import ReactTable from 'react-table';
+import './react-table.css';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import log from '../../lib/log';
-import {
-    // Grbl
-    GRBL,
-    // Marlin
-    MARLIN,
-    // Smoothie
-    SMOOTHIE,
-    // TinyG
-    TINYG
-} from '../../constants';
 import styles from './index.styl';
 
 class Laser2 extends PureComponent {
