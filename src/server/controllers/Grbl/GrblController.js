@@ -545,8 +545,6 @@ class GrblController {
             this.emit('serialport:read', res.raw);
         });
 
-
-
         this.runner.on('feedback', (res) => {
             this.emit('serialport:read', res.raw);
         });

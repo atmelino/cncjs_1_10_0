@@ -113,7 +113,7 @@ class ProbingGrid extends PureComponent {
                 log.error('ProbingGrid obj : ' + JSON.stringify(this.state.probingObj));
             }
         }
-        log.log(INFO, 'ProbingGrid render before return');
+        //log.log(INFO, 'ProbingGrid render before return');
 
         return (
             <div>
