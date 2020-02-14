@@ -262,6 +262,9 @@ class GrblController {
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
+            // atmelino
+            // this prints every line of gcode in terminal
+            // log.debug('this.feeder.on' + line);
         });
         this.feeder.on('hold', noop);
         this.feeder.on('unhold', noop);
@@ -534,7 +537,7 @@ class GrblController {
 
         this.runner.on('parameters', (res) => {
             // atmelino
-            log.error('parameters: ' + JSON.stringify(res));
+            log.debug('parameters: ' + JSON.stringify(res));
             const probingData = {
                 type: 'probing',
                 printed: false,
