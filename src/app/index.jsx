@@ -39,7 +39,6 @@ const renderPage = () => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
-    log.error('renderPage called');
     log.setLevel(TRACE);
     log.log(INFO, 'src/app/index.js renderPage called');
 
