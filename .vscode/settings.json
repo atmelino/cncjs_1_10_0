@@ -4,6 +4,9 @@
     ".eslintignore": true,
     ".eslintrc.js": true,
     "src/.vscode": true,
-    "src/app/.gitignore": true
+    "src/app/.gitignore": true,
+    ".vscode": true,
+    ".gitignore": true,
+    ".eslintrc": true
   }
 }

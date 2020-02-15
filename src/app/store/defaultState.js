@@ -22,7 +22,7 @@ const defaultState = {
             secondary: {
                 show: true,
                 widgets: [
-                    'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser', 'laser2'
+                    'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser', 'probe2'
                 ]
             }
         },
@@ -113,18 +113,14 @@ const defaultState = {
                 maxS: 1000
             }
         },
-        laser2: {
+        probe2: {
             minimized: false,
-            panel: {
-                laser2Test: {
-                    expanded: true
-                }
-            },
-            test: {
-                power: 0,
-                duration: 0,
-                maxS: 1000
-            }
+            probe2Command: 'G38.2',
+            useTLO: false,
+            probe2Depth: 10,
+            probe2Feedrate: 20,
+            touchPlateHeight: 10,
+            retractionDistance: 4
         },
         macro: {
             minimized: false
