@@ -1,10 +1,7 @@
 {
   "files.exclude": {
     "Dockerfile": true,
-    ".vscode": true,
-    ".gitignore": true,
     ".eslintignore": true,
-    ".eslintrc": true,
     ".eslintrc.js": true,
     "src/.vscode": true,
     "src/app/.gitignore": true
