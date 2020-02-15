@@ -24,11 +24,6 @@ import {
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
-    // TinyG
-    TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
@@ -37,11 +32,6 @@ import {
     MODAL_PREVIEW
 } from './constants';
 import styles from './index.styl';
-
-const gcode = (cmd, params) => {
-    const s = map(params, (value, letter) => String(letter + value)).join(' ');
-    return (s.length > 0) ? (cmd + ' ' + s) : cmd;
-};
 
 class Probe2Widget extends PureComponent {
     static propTypes = {
@@ -129,92 +119,6 @@ class Probe2Widget extends PureComponent {
             const retractionDistance = event.target.value;
             this.setState({ retractionDistance });
         },
-        populateProbe2Commands: () => {
-            const {
-                probe2Axis,
-                probe2Command,
-                useTLO,
-                probe2Depth,
-                probe2Feedrate,
-                touchPlateHeight,
-                retractionDistance
-            } = this.state;
-            const wcs = this.getWorkCoordinateSystem();
-            const mapWCSToP = (wcs) => ({
-                'G54': 1,
-                'G55': 2,
-                'G56': 3,
-                'G57': 4,
-                'G58': 5,
-                'G59': 6
-            }[wcs] || 0);
-            const towardWorkpiece = includes(['G38.2', 'G38.3'], probe2Command);
-            const posname = `pos${probe2Axis.toLowerCase()}`;
-            const tloProbe2Commands = [
-                gcode('; Cancel tool length offset'),
-                // Cancel tool length offset
-                gcode('G49'),
-
-                // Probe2 (use relative distance mode)
-                gcode(`; ${probe2Axis}-Probe2`),
-                gcode('G91'),
-                gcode(probe2Command, {
-                    [probe2Axis]: towardWorkpiece ? -probe2Depth : probe2Depth,
-                    F: probe2Feedrate
-                }),
-                // Use absolute distance mode
-                gcode('G90'),
-
-                // Dwell
-                gcode('; A dwell time of one second'),
-                gcode('G4 P1'),
-
-                // Apply touch plate height with tool length offset
-                gcode('; Set tool length offset'),
-                gcode('G43.1', {
-                    [probe2Axis]: towardWorkpiece ? `[${posname}-${touchPlateHeight}]` : `[${posname}+${touchPlateHeight}]`
-                }),
-
-                // Retract from the touch plate (use relative distance mode)
-                gcode('; Retract from the touch plate'),
-                gcode('G91'),
-                gcode('G0', {
-                    [probe2Axis]: retractionDistance
-                }),
-                // Use asolute distance mode
-                gcode('G90')
-            ];
-            const wcsProbe2Commands = [
-                // Probe2 (use relative distance mode)
-                gcode(`; ${probe2Axis}-Probe2`),
-                gcode('G91'),
-                gcode(probe2Command, {
-                    [probe2Axis]: towardWorkpiece ? -probe2Depth : probe2Depth,
-                    F: probe2Feedrate
-                }),
-                // Use absolute distance mode
-                gcode('G90'),
-
-                // Set the WCS 0 offset
-                gcode(`; Set the active WCS ${probe2Axis}0`),
-                gcode('G10', {
-                    L: 20,
-                    P: mapWCSToP(wcs),
-                    [probe2Axis]: touchPlateHeight
-                }),
-
-                // Retract from the touch plate (use relative distance mode)
-                gcode('; Retract from the touch plate'),
-                gcode('G91'),
-                gcode('G0', {
-                    [probe2Axis]: retractionDistance
-                }),
-                // Use absolute distance mode
-                gcode('G90')
-            ];
-
-            return useTLO ? tloProbe2Commands : wcsProbe2Commands;
-        },
         runProbe2Commands: (commands) => {
             controller.command('gcode', commands);
         }
@@ -262,16 +166,6 @@ class Probe2Widget extends PureComponent {
             if (type === SMOOTHIE) {
                 const { parserstate } = { ...state };
                 const { modal = {} } = { ...parserstate };
-                units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || units;
-            }
-
-            // TinyG
-            if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
                 units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -403,10 +297,6 @@ class Probe2Widget extends PureComponent {
             return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
         }
 
-        if (controllerType === TINYG) {
-            return get(controllerState, 'sr.modal.wcs') || defaultWCS;
-        }
-
         return defaultWCS;
     }
 
@@ -421,7 +311,7 @@ class Probe2Widget extends PureComponent {
         if (workflow.state !== WORKFLOW_STATE_IDLE) {
             return false;
         }
-        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -445,18 +335,6 @@ class Probe2Widget extends PureComponent {
                 return false;
             }
         }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -481,7 +359,7 @@ class Probe2Widget extends PureComponent {
                             <Space width="8" />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                            <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
                         {i18n._('Probe2')}
                     </Widget.Title>
@@ -544,7 +422,7 @@ class Probe2Widget extends PureComponent {
                     )}
                 >
                     {state.modal.name === MODAL_PREVIEW &&
-                    <RunProbe2 state={state} actions={actions} />
+                        <RunProbe2 state={state} actions={actions} />
                     }
                     <Probe2
                         state={state}

@@ -13,7 +13,7 @@ class RunProbe2 extends PureComponent {
     render() {
         const { state, actions } = this.props;
         const { useTLO } = state;
-        const probeCommands = actions.populateProbe2Commands();
+        const probeCommands = ['Saab', 'Volvo', 'BMW'];
         const content = probeCommands.join('\n');
 
         return (
