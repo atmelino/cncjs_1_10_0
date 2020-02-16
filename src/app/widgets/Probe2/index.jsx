@@ -1,6 +1,5 @@
 import get from 'lodash/get';
 import includes from 'lodash/includes';
-import map from 'lodash/map';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -9,6 +8,8 @@ import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
+import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import log from '../../lib/log';
 import WidgetConfig from '../WidgetConfig';
 import Probe2 from './Probe2';
 import RunProbe2 from './RunProbe2';
@@ -19,11 +20,6 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
-    // Marlin
-    MARLIN,
-    // Smoothie
-    SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
@@ -32,6 +28,7 @@ import {
     MODAL_PREVIEW
 } from './constants';
 import styles from './index.styl';
+
 
 class Probe2Widget extends PureComponent {
     static propTypes = {
@@ -93,112 +90,22 @@ class Probe2Widget extends PureComponent {
                 }
             });
         },
-        changeProbe2Axis: (value) => {
-            this.setState({ probe2Axis: value });
-        },
-        changeProbe2Command: (value) => {
-            this.setState({ probe2Command: value });
-        },
         toggleUseTLO: () => {
             const { useTLO } = this.state;
             this.setState({ useTLO: !useTLO });
         },
-        handleProbe2DepthChange: (event) => {
-            const probe2Depth = event.target.value;
-            this.setState({ probe2Depth });
-        },
-        handleProbe2FeedrateChange: (event) => {
-            const probe2Feedrate = event.target.value;
-            this.setState({ probe2Feedrate });
-        },
-        handleTouchPlateHeightChange: (event) => {
-            const touchPlateHeight = event.target.value;
-            this.setState({ touchPlateHeight });
-        },
-        handleRetractionDistanceChange: (event) => {
-            const retractionDistance = event.target.value;
-            this.setState({ retractionDistance });
-        },
         runProbe2Commands: (commands) => {
-            controller.command('gcode', commands);
-        }
-    };
-
-    controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
-        'workflow:state': (workflowState) => {
-            this.setState(state => ({
-                workflow: {
-                    state: workflowState
-                }
-            }));
-        },
-        'controller:state': (type, state) => {
-            let units = this.state.units;
-
-            // Grbl
-            if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || units;
-            }
-
-            // Marlin
-            if (type === MARLIN) {
-                const { modal = {} } = { ...state };
-                units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || units;
-            }
-
-            // Smoothie
-            if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || units;
-            }
-
-            if (this.state.units !== units) {
-                // Set `this.unitsDidChange` to true if the unit has changed
-                this.unitsDidChange = true;
-            }
-
-            this.setState({
-                units: units,
-                controller: {
-                    type: type,
-                    state: state
-                },
-                probe2Depth: mapValueToUnits(this.config.get('probe2Depth'), units),
-                probe2Feedrate: mapValueToUnits(this.config.get('probe2Feedrate'), units),
-                touchPlateHeight: mapValueToUnits(this.config.get('touchPlateHeight'), units),
-                retractionDistance: mapValueToUnits(this.config.get('retractionDistance'), units)
-            });
+            log.setLevel(TRACE);
+            log.log(INFO, './src/app/widgets/Probe2/index.jsx modal dialog closed, runProbe2Commands called');
         }
     };
 
     unitsDidChange = false;
 
     componentDidMount() {
-        this.addControllerEvents();
     }
 
     componentWillUnmount() {
-        this.removeControllerEvents();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -266,20 +173,6 @@ class Probe2Widget extends PureComponent {
         };
     }
 
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
-    }
-
     getWorkCoordinateSystem() {
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
@@ -288,15 +181,6 @@ class Probe2Widget extends PureComponent {
         if (controllerType === GRBL) {
             return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
         }
-
-        if (controllerType === MARLIN) {
-            return get(controllerState, 'modal.wcs') || defaultWCS;
-        }
-
-        if (controllerType === SMOOTHIE) {
-            return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-
         return defaultWCS;
     }
 
@@ -311,25 +195,13 @@ class Probe2Widget extends PureComponent {
         if (workflow.state !== WORKFLOW_STATE_IDLE) {
             return false;
         }
-        if (!includes([GRBL, MARLIN, SMOOTHIE], controllerType)) {
+        if (!includes([GRBL], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
             const activeState = get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_IDLE
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === MARLIN) {
-            // Marlin does not have machine state
-        }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE
             ];
             if (!includes(states, activeState)) {
                 return false;
