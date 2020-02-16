@@ -1,28 +1,14 @@
-import get from 'lodash/get';
-import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import { in2mm, mapValueToUnits } from 'app/lib/units';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import log from '../../lib/log';
 import WidgetConfig from '../WidgetConfig';
 import Probe2 from './Probe2';
 import RunProbe2 from './RunProbe2';
-import {
-    // Units
-    IMPERIAL_UNITS,
-    METRIC_UNITS,
-    // Grbl
-    GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    // Workflow
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
     MODAL_NONE,
     MODAL_PREVIEW
@@ -100,8 +86,6 @@ class Probe2Widget extends PureComponent {
         }
     };
 
-    unitsDidChange = false;
-
     componentDidMount() {
     }
 
@@ -115,99 +99,20 @@ class Probe2Widget extends PureComponent {
 
         this.config.set('minimized', minimized);
 
-        // Do not save config settings if the units did change between in and mm
-        if (this.unitsDidChange) {
-            this.unitsDidChange = false;
-            return;
-        }
-
-        const { units, probe2Command, useTLO } = this.state;
-        this.config.set('probe2Command', probe2Command);
+        const { useTLO } = this.state;
         this.config.set('useTLO', useTLO);
-
-        let {
-            probe2Depth,
-            probe2Feedrate,
-            touchPlateHeight,
-            retractionDistance
-        } = this.state;
-
-        // To save in mm
-        if (units === IMPERIAL_UNITS) {
-            probe2Depth = in2mm(probe2Depth);
-            probe2Feedrate = in2mm(probe2Feedrate);
-            touchPlateHeight = in2mm(touchPlateHeight);
-            retractionDistance = in2mm(retractionDistance);
-        }
-        this.config.set('probe2Depth', Number(probe2Depth));
-        this.config.set('probe2Feedrate', Number(probe2Feedrate));
-        this.config.set('touchPlateHeight', Number(touchPlateHeight));
-        this.config.set('retractionDistance', Number(retractionDistance));
     }
 
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
-            units: METRIC_UNITS,
-            controller: {
-                type: controller.type,
-                state: controller.state
-            },
-            workflow: {
-                state: controller.workflow.state
-            },
             modal: {
                 name: MODAL_NONE,
                 params: {}
             },
-            probe2Axis: this.config.get('probe2Axis', 'Z'),
-            probe2Command: this.config.get('probe2Command', 'G38.2'),
             useTLO: this.config.get('useTLO'),
-            probe2Depth: Number(this.config.get('probe2Depth') || 0).toFixed(3) * 1,
-            probe2Feedrate: Number(this.config.get('probe2Feedrate') || 0).toFixed(3) * 1,
-            touchPlateHeight: Number(this.config.get('touchPlateHeight') || 0).toFixed(3) * 1,
-            retractionDistance: Number(this.config.get('retractionDistance') || 0).toFixed(3) * 1
         };
-    }
-
-    getWorkCoordinateSystem() {
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-        const defaultWCS = 'G54';
-
-        if (controllerType === GRBL) {
-            return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-        return defaultWCS;
-    }
-
-    canClick() {
-        const { port, workflow } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-
-        if (!port) {
-            return false;
-        }
-        if (workflow.state !== WORKFLOW_STATE_IDLE) {
-            return false;
-        }
-        if (!includes([GRBL], controllerType)) {
-            return false;
-        }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_IDLE
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     render() {
@@ -215,8 +120,7 @@ class Probe2Widget extends PureComponent {
         const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
-            ...this.state,
-            canClick: this.canClick()
+            ...this.state
         };
         const actions = {
             ...this.actions

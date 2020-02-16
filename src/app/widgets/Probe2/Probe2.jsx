@@ -13,9 +13,6 @@ class Probe2 extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const {
-            canClick
-        } = state;
 
         return (
             <div>
