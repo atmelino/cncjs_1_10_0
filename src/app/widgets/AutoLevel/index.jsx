@@ -12,8 +12,8 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
-import ProbingGrid from './ProbingGrid';
-import RunProbe2 from './RunProbe2';
+import AutoLevel from './AutoLevel';
+import MakeProbeFile from './MakeProbeFile';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -33,7 +33,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class ProbingGridWidget extends PureComponent {
+class AutoLevelWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -81,9 +81,36 @@ class ProbingGridWidget extends PureComponent {
                 }
             });
         },
-        runProbe2Commands: (commands) => {
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
+        handleProbeDepthChange: (event) => {
+            const startX = event.target.value;
+            this.setState({ startX });
+        },
+        populateProbeCommands: () => {
+            const {
+                probeAxis,
+                probeCommand,
+                probeDepth,
+                probeFeedrate,
+                touchPlateHeight,
+                retractionDistance
+            } = this.state;
+            const tloProbeCommands = ['Saab', 'Volvo', 'BMW'];
+            return tloProbeCommands;
+        },
+        makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
-            log.log(INFO, './src/app/widgets/ProbingGrid/index.jsx modal dialog closed, runProbe2Commands called');
+            log.log(INFO, './src/app/widgets/AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
         }
     };
 
@@ -92,13 +119,13 @@ class ProbingGridWidget extends PureComponent {
         'prbevent': (payload) => {
             //const { mypayload } = payload;
             //this.setState({ payload: payload });
-            log.error('ProbingGrid Probing prbevent');
+            log.error('AutoLevel Probing prbevent');
         },
         'serialport:read': (received) => {
             if (received.type === 'probing') {
                 // atmelino
-                //log.error('ProbingGrid probing received through serialport:read');
-                //log.error('ProbingGrid s:r' + JSON.stringify(received));
+                //log.error('AutoLevel probing received through serialport:read');
+                //log.error('AutoLevel s:r' + JSON.stringify(received));
                 this.setState({ probingData: received });
             }
             //const { opt } = received;
@@ -166,7 +193,7 @@ class ProbingGridWidget extends PureComponent {
                 }));
             }
             // atmelino
-            //log.error('ProbingGrid Probing controller:state');
+            //log.error('AutoLevel Probing controller:state');
         }
     };
 
@@ -197,7 +224,11 @@ class ProbingGridWidget extends PureComponent {
             modal: {
                 name: MODAL_NONE,
                 params: {}
-            }
+            },
+            startX: 3,
+            endX: 100,
+            startY: 2,
+            endY: 98
         };
     }
 
@@ -205,7 +236,7 @@ class ProbingGridWidget extends PureComponent {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
-            //log.error('ProbingGrid Probing addControllerEvents');
+            //log.error('AutoLevel Probing addControllerEvents');
         });
     }
 
@@ -252,7 +283,7 @@ class ProbingGridWidget extends PureComponent {
                         {isForkedWidget &&
                             <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
-                        {i18n._('Probing Grid')}
+                        {i18n._('AutoLevel')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
@@ -313,9 +344,9 @@ class ProbingGridWidget extends PureComponent {
                     )}
                 >
                     {state.modal.name === MODAL_PREVIEW &&
-                        <RunProbe2 state={state} actions={actions} />
+                        <MakeProbeFile state={state} actions={actions} />
                     }
-                    <ProbingGrid
+                    <AutoLevel
                         state={state}
                         actions={actions}
                     />
@@ -325,4 +356,4 @@ class ProbingGridWidget extends PureComponent {
     }
 }
 
-export default ProbingGridWidget;
+export default AutoLevelWidget;

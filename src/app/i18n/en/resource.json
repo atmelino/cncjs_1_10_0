@@ -495,11 +495,15 @@
     "Ready to start": "Ready to start",
     "Connect to an IP camera": "Connect to an IP camera",
     "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.",
-    "Probing Grid Widget": "Probing Grid Widget",
+    "AutoLevel Widget": "AutoLevel Widget",
     "This widget lets you probe a grid for autolevelling a PCB.": "This widget lets you probe a grid for autolevelling a PCB.",
-    "Probing Grid": "Probing Grid",
+    "AutoLevel": "AutoLevel",
     "Probe2 Widget": "Probe2 Widget",
     "This widget probe2 to test modal dialog.": "This widget probe2 to test modal dialog.",
     "Probe2": "Probe2",
-    "Run Probe2": "Run Probe2"
+    "Run Probe2": "Run Probe2",
+    "Make File": "Make File",
+    "Make Probe File": "Make Probe File",
+    "Start X": "Start X",
+    "End X": "End X"
 }

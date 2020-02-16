@@ -9,7 +9,7 @@ import {
     MODAL_PREVIEW
 } from './constants';
 
-class ProbingGrid extends PureComponent {
+class AutoLevel extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -25,7 +25,7 @@ class ProbingGrid extends PureComponent {
     }
 
     clearGrid = () => {
-        log.error('ProbingGrid clearGrid');
+        log.error('AutoLevel clearGrid');
         this.setState({
             probingObj: [],
             probingString: [],
@@ -48,11 +48,11 @@ class ProbingGrid extends PureComponent {
 
     render() {
         log.setLevel(TRACE);
-        log.log(INFO, './src/app/widgets/ProbingGrid/ProbingGrid render called');
+        //log.log(INFO, './src/app/widgets/AutoLevel/AutoLevel render called');
 
         //const { state } = this.props;
         const { state, actions } = this.props;
-        //log.error('ProbingGrid :' + JSON.stringify(state));
+        //log.error('AutoLevel :' + JSON.stringify(state));
 
         const colWidth = 60;
         const probingColumns = [{
@@ -74,12 +74,12 @@ class ProbingGrid extends PureComponent {
         }];
 
         if (Object.prototype.hasOwnProperty.call(state, 'probingData')) {
-            //log.error('ProbingGrid :' + JSON.stringify(state));
-            //log.error('ProbingGrid :' + JSON.stringify(state.probingData));
-            //log.error('ProbingGrid :' + JSON.stringify(state.probingData.result));
+            //log.error('AutoLevel :' + JSON.stringify(state));
+            //log.error('AutoLevel :' + JSON.stringify(state.probingData));
+            //log.error('AutoLevel :' + JSON.stringify(state.probingData.result));
             if (state.probingData.printed === false) {
                 state.probingData.printed = true;
-                log.error('ProbingGrid result :' + JSON.stringify(state.probingData.result));
+                log.error('AutoLevel result :' + JSON.stringify(state.probingData.result));
                 let sx = state.probingData.result.x;
                 let sy = state.probingData.result.y;
                 let sz = state.probingData.result.z;
@@ -91,18 +91,18 @@ class ProbingGrid extends PureComponent {
 
                 // correct new z entry for autolevel plane
                 //var cz = numeral(0.0).format('0.000');
-                log.error('ProbingGrid new reference: ' + this.state.referenceZ);
+                log.error('AutoLevel new reference: ' + this.state.referenceZ);
                 let PRBz = Number(sz);
                 let corz = PRBz - this.state.referenceZ; // corrected z
                 var cz = numeral(corz).format('0.000');
 
                 // if (this.state.probingObj.length > 0) {
-                //     log.error('ProbingGrid points: ' + this.state.probingObj.length);
+                //     log.error('AutoLevel points: ' + this.state.probingObj.length);
                 //     // first point? use z as reference
                 //     // same x-y position as before? Replace previous entry
                 //     let index = this.state.probingObj.length - 1;
                 //     if (sx === this.state.probingObj[index].x && sy === this.state.probingObj[index].y) {
-                //         log.error('ProbingGrid repeat position: ');
+                //         log.error('AutoLevel repeat position: ');
                 //         this.state.referenceZ = Number(sz);
                 //     }
                 // }
@@ -113,10 +113,10 @@ class ProbingGrid extends PureComponent {
                     z: cz,
                     pz: sz
                 });
-                log.error('ProbingGrid obj : ' + JSON.stringify(this.state.probingObj));
+                log.error('AutoLevel obj : ' + JSON.stringify(this.state.probingObj));
             }
         }
-        //log.log(INFO, 'ProbingGrid render before return');
+        //log.log(INFO, 'AutoLevel render before return');
 
         return (
             <div>
@@ -145,7 +145,7 @@ class ProbingGrid extends PureComponent {
                             }}
                             disabled={false}
                         >
-                            Probe2
+                            Make Probe File
                         </button>
                     </div>
                 </div>
@@ -154,4 +154,4 @@ class ProbingGrid extends PureComponent {
     }
 }
 
-export default ProbingGrid;
+export default AutoLevel;
