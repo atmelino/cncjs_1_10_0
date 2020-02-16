@@ -4,14 +4,16 @@ import mapValues from 'lodash/mapValues';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import log from '../../lib/log';
 import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
-import log from '../../lib/log';
 import WidgetConfig from '../WidgetConfig';
 import ProbingGrid from './ProbingGrid';
+import RunProbe2 from './RunProbe2';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -25,6 +27,10 @@ import {
     // TinyG
     TINYG,
 } from '../../constants';
+import {
+    MODAL_NONE,
+    MODAL_PREVIEW
+} from './constants';
 import styles from './index.styl';
 
 class ProbingGridWidget extends PureComponent {
@@ -44,7 +50,9 @@ class ProbingGridWidget extends PureComponent {
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -56,8 +64,29 @@ class ProbingGridWidget extends PureComponent {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
+        },
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        runProbe2Commands: (commands) => {
+            log.setLevel(TRACE);
+            log.log(INFO, './src/app/widgets/ProbingGrid/index.jsx modal dialog closed, runProbe2Commands called');
         }
     };
+
     controllerEvents = {
         // atmelino
         'prbevent': (payload) => {
@@ -165,8 +194,13 @@ class ProbingGridWidget extends PureComponent {
                 settings: controller.settings,
                 state: controller.state
             },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
@@ -174,12 +208,14 @@ class ProbingGridWidget extends PureComponent {
             //log.error('ProbingGrid Probing addControllerEvents');
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const { port, controller } = this.state;
         const controllerType = controller.type;
@@ -192,6 +228,7 @@ class ProbingGridWidget extends PureComponent {
         }
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
@@ -275,6 +312,9 @@ class ProbingGridWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
+                    {state.modal.name === MODAL_PREVIEW &&
+                        <RunProbe2 state={state} actions={actions} />
+                    }
                     <ProbingGrid
                         state={state}
                         actions={actions}

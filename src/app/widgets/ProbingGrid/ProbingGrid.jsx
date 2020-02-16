@@ -5,6 +5,9 @@ import ReactTable from 'react-table';
 import './react-table.css';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import log from '../../lib/log';
+import {
+    MODAL_PREVIEW
+} from './constants';
 
 class ProbingGrid extends PureComponent {
     static propTypes = {
@@ -47,6 +50,10 @@ class ProbingGrid extends PureComponent {
         log.setLevel(TRACE);
         log.log(INFO, './src/app/widgets/ProbingGrid/ProbingGrid render called');
 
+        //const { state } = this.props;
+        const { state, actions } = this.props;
+        //log.error('ProbingGrid :' + JSON.stringify(state));
+
         const colWidth = 60;
         const probingColumns = [{
             Header: 'x',
@@ -65,10 +72,6 @@ class ProbingGrid extends PureComponent {
             accessor: 'pz',
             width: colWidth
         }];
-
-        const { state } = this.props;
-        //const { state, actions } = this.props;
-        //log.error('ProbingGrid :' + JSON.stringify(state));
 
         if (Object.prototype.hasOwnProperty.call(state, 'probingData')) {
             //log.error('ProbingGrid :' + JSON.stringify(state));
@@ -130,6 +133,20 @@ class ProbingGrid extends PureComponent {
                             <button onClick={this.clearGrid}>Clear</button>
                             <button onClick={this.handleClickSave}>Save</button>
                         </div>
+                    </div>
+                </div>
+                <div className="row no-gutters">
+                    <div className="col-xs-12">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default"
+                            onClick={() => {
+                                actions.openModal(MODAL_PREVIEW);
+                            }}
+                            disabled={false}
+                        >
+                            Probe2
+                        </button>
                     </div>
                 </div>
             </div >
