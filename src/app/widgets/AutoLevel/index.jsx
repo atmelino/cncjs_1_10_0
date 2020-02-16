@@ -66,6 +66,8 @@ class AutoLevelWidget extends PureComponent {
             this.setState({ minimized: !minimized });
         },
         openModal: (name = MODAL_NONE, params = {}) => {
+            log.setLevel(TRACE);
+            log.log(INFO, 'AutoLevel/index.jsx before dialog startX=' + this.state.startX);
             this.setState({
                 modal: {
                     name: name,
@@ -96,21 +98,10 @@ class AutoLevelWidget extends PureComponent {
             const startX = event.target.value;
             this.setState({ startX });
         },
-        populateProbeCommands: () => {
-            const {
-                probeAxis,
-                probeCommand,
-                probeDepth,
-                probeFeedrate,
-                touchPlateHeight,
-                retractionDistance
-            } = this.state;
-            const tloProbeCommands = ['Saab', 'Volvo', 'BMW'];
-            return tloProbeCommands;
-        },
         makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
-            log.log(INFO, './src/app/widgets/AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
+            log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
+            log.log(INFO, 'AutoLevel/index.jsx startX=' + this.state.startX);
         }
     };
 

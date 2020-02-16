@@ -18,10 +18,6 @@ class MakeProbeFile extends PureComponent {
         log.setLevel(TRACE);
         log.log(INFO, 'MakeProbeFile :' + JSON.stringify(state));
 
-        const probeDepth = 12;
-        const probeCommands = actions.populateProbeCommands();
-        //const probeCommands = ['Saab', 'Volvo', 'BMW'];
-        const content = probeCommands.join('\n');
         const displayUnits = i18n._('mm');
         const step = 1;
 
@@ -75,9 +71,6 @@ class MakeProbeFile extends PureComponent {
                             </div>
                         </div>
                     </div>
-                    <pre style={{ minHeight: 240 }}>
-                        <code>{content}</code>
-                    </pre>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -92,7 +85,7 @@ class MakeProbeFile extends PureComponent {
                         className="btn btn-primary"
                         onClick={() => {
                             actions.closeModal();
-                            actions.makeProbeFileCommands(probeCommands);
+                            actions.makeProbeFileCommands('hello');
                         }}
                     >
                         {i18n._('Make File')}
