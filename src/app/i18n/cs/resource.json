@@ -503,7 +503,11 @@
     "Probe2": "",
     "Run Probe2": "",
     "Make File": "",
-    "Make Probe File": "",
+    "Make Probing Grid File": "",
     "Start X": "",
-    "End X": ""
+    "End X": "",
+    "Start Y": "",
+    "End Y": "",
+    "Step X": "",
+    "Step Y": ""
 }

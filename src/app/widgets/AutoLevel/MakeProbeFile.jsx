@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from 'app/components/Modal';
-import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import log from '../../lib/log';
@@ -14,9 +13,9 @@ class MakeProbeFile extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const { startX, endX, useTLO } = state;
-        log.setLevel(TRACE);
-        log.log(INFO, 'MakeProbeFile :' + JSON.stringify(state));
+        const { startX, endX, startY, endY, stepX, stepY } = state;
+        //log.setLevel(TRACE);
+        //log.log(INFO, 'MakeProbeFile render:' + JSON.stringify(state));
 
         const displayUnits = i18n._('mm');
         const step = 1;
@@ -24,17 +23,9 @@ class MakeProbeFile extends PureComponent {
         return (
             <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Make Probe File')}</Modal.Title>
+                    <Modal.Title>{i18n._('Make Probing Grid File')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div style={{ marginBottom: 10 }}>
-                        <ToggleSwitch
-                            checked={useTLO}
-                            size="sm"
-                            onChange={actions.toggleUseTLO}
-                        />
-                        {i18n._('Apply tool length offset')}
-                    </div>
                     <div className="row no-gutters">
                         <div className="col-xs-6" style={{ paddingRight: 5 }}>
                             <div className="form-group">
@@ -47,7 +38,7 @@ class MakeProbeFile extends PureComponent {
                                         placeholder="0.00"
                                         min={0}
                                         step={step}
-                                        onChange={actions.handleProbeDepthChange}
+                                        onChange={actions.handleStartXChange}
                                     />
                                     <div className="input-group-addon">{displayUnits}</div>
                                 </div>
@@ -64,7 +55,75 @@ class MakeProbeFile extends PureComponent {
                                         placeholder="0.00"
                                         min={0}
                                         step={step}
-                                        onChange={actions.handleProbeFeedrateChange}
+                                        onChange={actions.handleEndXChange}
+                                    />
+                                    <span className="input-group-addon">{displayUnits}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingRight: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('Start Y')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={startY}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleStartYChange}
+                                    />
+                                    <div className="input-group-addon">{displayUnits}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('End Y')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={endY}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleEndYChange}
+                                    />
+                                    <span className="input-group-addon">{displayUnits}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingRight: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('Step X')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={stepX}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleStepXChange}
+                                    />
+                                    <div className="input-group-addon">{displayUnits}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('Step Y')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={stepY}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleStepYChange}
                                     />
                                     <span className="input-group-addon">{displayUnits}</span>
                                 </div>

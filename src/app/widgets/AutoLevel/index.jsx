@@ -94,14 +94,35 @@ class AutoLevelWidget extends PureComponent {
                 }
             });
         },
-        handleProbeDepthChange: (event) => {
+        handleStartXChange: (event) => {
             const startX = event.target.value;
             this.setState({ startX });
         },
+        handleEndXChange: (event) => {
+            const endX = event.target.value;
+            this.setState({ endX });
+        },
+        handleStartYChange: (event) => {
+            const startY = event.target.value;
+            this.setState({ startY });
+        },
+        handleEndYChange: (event) => {
+            const endY = event.target.value;
+            this.setState({ endY });
+        },
+        handleStepXChange: (event) => {
+            const stepX = event.target.value;
+            this.setState({ stepX });
+        },
+        handleStepYChange: (event) => {
+            const stepY = event.target.value;
+            this.setState({ stepY });
+        },
         makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
-            log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
-            log.log(INFO, 'AutoLevel/index.jsx startX=' + this.state.startX);
+            //log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
+            //log.log(INFO, 'AutoLevel/index.jsx startX=' + this.state.startX);
+            log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + JSON.stringify(this.state));
         }
     };
 
@@ -219,7 +240,9 @@ class AutoLevelWidget extends PureComponent {
             startX: 3,
             endX: 100,
             startY: 2,
-            endY: 98
+            endY: 98,
+            stepX: 10,
+            stepY: 10
         };
     }
 
