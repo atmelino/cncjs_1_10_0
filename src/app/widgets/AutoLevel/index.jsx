@@ -123,6 +123,42 @@ class AutoLevelWidget extends PureComponent {
             //log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
             //log.log(INFO, 'AutoLevel/index.jsx startX=' + this.state.startX);
             log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + JSON.stringify(this.state));
+            let code = [];
+            let dx = (this.state.endX - this.state.startX) / parseInt((this.state.endX - this.state.startX) / this.state.stepX, 10);
+            let dy = (this.state.endY - this.state.startY) / parseInt((this.state.endY - this.state.startY) / this.state.stepY, 10);
+            code.push('(AL: probing initial point)\n');
+            code.push(`G90 G0 X${this.state.startX.toFixed(3)} Y${this.state.startY.toFixed(3)} Z${this.state.height}\n`);
+            code.push(`G38.2 Z-${this.state.height} F${this.state.feed / 2}\n`);
+            code.push('G10 L20 P1 Z0\n'); // set the z zero
+            code.push(`G0 Z${this.state.height}\n`);
+            let y = this.state.startY - dy;
+            while (y < this.state.endY - 0.01) {
+                y += dy;
+                if (y > this.state.endY) {
+                    y = this.state.endY;
+                }
+                let x = this.state.startX - dx;
+                if (y <= this.state.startY + 0.01) {
+                    x = this.state.startX;
+                } // don't probe first point twice
+                while (x < this.state.endX - 0.01) {
+                    x += dx;
+                    if (x > this.state.endX) {
+                        x = this.state.endX;
+                    }
+                    //code.push(`(AL: probing point ${this.state.planedPointCount + 1})`);
+                    code.push(`G90 G0 X${x.toFixed(3)} Y${y.toFixed(3)} Z${this.state.height}\n`);
+                    code.push(`G38.2 Z-${this.state.height} F${this.state.feed}\n`);
+                    code.push(`G0 Z${this.state.height}\n`);
+                }
+            }
+            log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + JSON.stringify(code));
+            log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + code.join('\n'));
+            let element = document.createElement('a');
+            let file = new Blob(code, { type: 'text/plain' });
+            element.href = URL.createObjectURL(file);
+            element.download = 'Probing.ngc';
+            element.click();
         }
     };
 
@@ -242,7 +278,9 @@ class AutoLevelWidget extends PureComponent {
             startY: 2,
             endY: 98,
             stepX: 10,
-            stepY: 10
+            stepY: 10,
+            feed: 50,
+            height: 2
         };
     }
 
