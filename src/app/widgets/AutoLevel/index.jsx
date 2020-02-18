@@ -96,27 +96,27 @@ class AutoLevelWidget extends PureComponent {
         },
         handleStartXChange: (event) => {
             const startX = event.target.value;
-            this.setState({ startX });
+            this.setState({ startX: parseInt(startX, 10) });
         },
         handleEndXChange: (event) => {
             const endX = event.target.value;
-            this.setState({ endX });
+            this.setState({ endX: parseInt(endX, 10) });
         },
         handleStartYChange: (event) => {
             const startY = event.target.value;
-            this.setState({ startY });
+            this.setState({ startY: parseInt(startY, 10) });
         },
         handleEndYChange: (event) => {
             const endY = event.target.value;
-            this.setState({ endY });
+            this.setState({ endY: parseInt(endY, 10) });
         },
         handleStepXChange: (event) => {
             const stepX = event.target.value;
-            this.setState({ stepX });
+            this.setState({ stepX: parseInt(stepX, 10) });
         },
         handleStepYChange: (event) => {
             const stepY = event.target.value;
-            this.setState({ stepY });
+            this.setState({ stepY: parseInt(stepY, 10) });
         },
         makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
@@ -152,8 +152,8 @@ class AutoLevelWidget extends PureComponent {
                     code.push(`G0 Z${this.state.height}\n`);
                 }
             }
-            log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + JSON.stringify(code));
-            log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + code.join('\n'));
+            //log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + JSON.stringify(code));
+            //log.log(INFO, 'AutoLevel/index.jsx makeProbeFileCommands:' + code.join('\n'));
             let element = document.createElement('a');
             let file = new Blob(code, { type: 'text/plain' });
             element.href = URL.createObjectURL(file);
