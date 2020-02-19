@@ -509,5 +509,7 @@
     "Start Y": "Start Y",
     "End Y": "End Y",
     "Step X": "Step X",
-    "Step Y": "Step Y"
+    "Step Y": "Step Y",
+    "Feedrate X-Y": "Feedrate X-Y",
+    "Feedrate Z": "Feedrate Z"
 }

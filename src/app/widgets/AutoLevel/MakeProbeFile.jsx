@@ -13,7 +13,7 @@ class MakeProbeFile extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const { startX, endX, startY, endY, stepX, stepY } = state;
+        const { startX, endX, startY, endY, stepX, stepY, feedXY, feedZ } = state;
         //log.setLevel(TRACE);
         //log.log(INFO, 'MakeProbeFile render:' + JSON.stringify(state));
 
@@ -124,6 +124,40 @@ class MakeProbeFile extends PureComponent {
                                         min={0}
                                         step={step}
                                         onChange={actions.handleStepYChange}
+                                    />
+                                    <span className="input-group-addon">{displayUnits}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingRight: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('Feedrate X-Y')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={feedXY}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleFeedXYChange}
+                                    />
+                                    <div className="input-group-addon">{displayUnits}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-xs-6" style={{ paddingLeft: 5 }}>
+                            <div className="form-group">
+                                <label className="control-label">{i18n._('Feedrate Z')}</label>
+                                <div className="input-group input-group-sm">
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={feedZ}
+                                        placeholder="0.00"
+                                        min={0}
+                                        step={step}
+                                        onChange={actions.handleFeedZChange}
                                     />
                                     <span className="input-group-addon">{displayUnits}</span>
                                 </div>

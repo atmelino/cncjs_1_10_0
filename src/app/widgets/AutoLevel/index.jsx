@@ -118,6 +118,14 @@ class AutoLevelWidget extends PureComponent {
             const stepY = event.target.value;
             this.setState({ stepY: parseInt(stepY, 10) });
         },
+        handleFeedXYChange: (event) => {
+            const feedXY = event.target.value;
+            this.setState({ feedXY: parseInt(feedXY, 10) });
+        },
+        handleFeedZChange: (event) => {
+            const feedZ = event.target.value;
+            this.setState({ feedZ: parseInt(feedZ, 10) });
+        },
         makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
             //log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
@@ -128,7 +136,7 @@ class AutoLevelWidget extends PureComponent {
             let dy = (this.state.endY - this.state.startY) / parseInt((this.state.endY - this.state.startY) / this.state.stepY, 10);
             code.push('(AL: probing initial point)\n');
             code.push(`G90 G0 X${this.state.startX.toFixed(3)} Y${this.state.startY.toFixed(3)} Z${this.state.height}\n`);
-            code.push(`G38.2 Z-${this.state.height} F${this.state.feed / 2}\n`);
+            code.push(`G38.2 Z-${this.state.height} F${this.state.feedXY / 2}\n`);
             code.push('G10 L20 P1 Z0\n'); // set the z zero
             code.push(`G0 Z${this.state.height}\n`);
             let y = this.state.startY - dy;
@@ -148,7 +156,7 @@ class AutoLevelWidget extends PureComponent {
                     }
                     //code.push(`(AL: probing point ${this.state.planedPointCount + 1})`);
                     code.push(`G90 G0 X${x.toFixed(3)} Y${y.toFixed(3)} Z${this.state.height}\n`);
-                    code.push(`G38.2 Z-${this.state.height} F${this.state.feed}\n`);
+                    code.push(`G38.2 Z-${this.state.height} F${this.state.feedXY}\n`);
                     code.push(`G0 Z${this.state.height}\n`);
                 }
             }
@@ -279,7 +287,8 @@ class AutoLevelWidget extends PureComponent {
             endY: 98,
             stepX: 10,
             stepY: 10,
-            feed: 50,
+            feedXY: 50,
+            feedZ: 3,
             height: 2
         };
     }
