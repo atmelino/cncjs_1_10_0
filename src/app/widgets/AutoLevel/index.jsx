@@ -126,6 +126,14 @@ class AutoLevelWidget extends PureComponent {
             const feedZ = event.target.value;
             this.setState({ feedZ: parseInt(feedZ, 10) });
         },
+        handleDepthChange: (event) => {
+            const depth = event.target.value;
+            this.setState({ depth: parseInt(depth, 10) });
+        },
+        handleHeightChange: (event) => {
+            const height = event.target.value;
+            this.setState({ height: parseInt(height, 10) });
+        },
         makeProbeFileCommands: (commands) => {
             log.setLevel(TRACE);
             //log.log(INFO, 'AutoLevel/index.jsx modal dialog closed, makeProbeFileCommands called');
@@ -136,7 +144,7 @@ class AutoLevelWidget extends PureComponent {
             let dy = (this.state.endY - this.state.startY) / parseInt((this.state.endY - this.state.startY) / this.state.stepY, 10);
             code.push('(AL: probing initial point)\n');
             code.push(`G90 G0 X${this.state.startX.toFixed(3)} Y${this.state.startY.toFixed(3)} Z${this.state.height}\n`);
-            code.push(`G38.2 Z-${this.state.height} F${this.state.feedXY / 2}\n`);
+            code.push(`G38.2 Z-${this.state.depth} F${this.state.feedZ / 2}\n`);
             code.push('G10 L20 P1 Z0\n'); // set the z zero
             code.push(`G0 Z${this.state.height}\n`);
             let y = this.state.startY - dy;
@@ -155,8 +163,8 @@ class AutoLevelWidget extends PureComponent {
                         x = this.state.endX;
                     }
                     //code.push(`(AL: probing point ${this.state.planedPointCount + 1})`);
-                    code.push(`G90 G0 X${x.toFixed(3)} Y${y.toFixed(3)} Z${this.state.height}\n`);
-                    code.push(`G38.2 Z-${this.state.height} F${this.state.feedXY}\n`);
+                    code.push(`G90 G0 X${x.toFixed(3)} Y${y.toFixed(3)} F${this.state.feedXY}\n`);
+                    code.push(`G38.2 Z-${this.state.depth} F${this.state.feedZ}\n`);
                     code.push(`G0 Z${this.state.height}\n`);
                 }
             }
@@ -287,9 +295,10 @@ class AutoLevelWidget extends PureComponent {
             endY: 98,
             stepX: 10,
             stepY: 10,
-            feedXY: 50,
-            feedZ: 3,
-            height: 2
+            feedXY: 600,
+            feedZ: 50,
+            depth: 6,
+            height: 5
         };
     }
 

@@ -511,5 +511,6 @@
     "Step X": "",
     "Step Y": "",
     "Feedrate X-Y": "",
-    "Feedrate Z": ""
+    "Feedrate Z": "",
+    "Safe Height": ""
 }
